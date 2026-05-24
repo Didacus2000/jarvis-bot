@@ -30,9 +30,9 @@ client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 async def on_message(message):
     if message.author == bot.user:
         return
-        if message.content.startswith('!'):
-        await bot.process_commands(message)
-        return
+    if message.content.startswith('!'):
+            await bot.process_commands(message)
+            return
     
     # Intentar obtener respuesta de Groq
     try:
