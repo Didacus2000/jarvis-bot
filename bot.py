@@ -4,7 +4,7 @@ import threading
 from flask import Flask
 from discord.ext import commands
 from groq import Groq
-
+from androidtvremote2 import AndroidTVRemote
 # 1. Configuración de Flask para Render
 app = Flask(__name__)
 @app.route('/')
@@ -19,7 +19,10 @@ def run_web():
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
-
+# --- Módulo de Control de TV ---
+@bot.command()
+async def tv(ctx, *, accion):
+    await ctx.send(f"Jarvis ha recibido la orden para la TV: {accion}")
 # Inicializar cliente de Groq
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
