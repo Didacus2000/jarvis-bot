@@ -30,6 +30,9 @@ client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 async def on_message(message):
     if message.author == bot.user:
         return
+        if message.content.startswith('!'):
+        await bot.process_commands(message)
+        return
     
     # Intentar obtener respuesta de Groq
     try:
@@ -41,7 +44,17 @@ async def on_message(message):
         await message.channel.send(response)
     except Exception as e:
         await message.channel.send(f"Error de conexión: {str(e)}")
-
+# --- Módulo de Control de TV ---
+@bot.command()
+async def tv(ctx, *, accion):
+    if accion == "conectar":
+        # Esta lógica inicializará el cliente de Android TV Remote
+        remote = AndroidTVRemote(TV_IP)
+        # Aquí iniciaremos el proceso de emparejamiento
+        await ctx.send("Iniciando emparejamiento. Revisa tu TV y escribe: !tv codigo [codigo_que_aparezca]")
+    else:
+        await ctx.send(f"Orden enviada: {accion}")
+        
 if __name__ == "__main__":
     # Iniciar la web en segundo plano
     t = threading.Thread(target=run_web)
