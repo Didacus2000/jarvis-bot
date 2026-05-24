@@ -32,7 +32,7 @@ async def on_message(message):
     try:
         chat_completion = client.chat.completions.create(
             messages=[{"role": "user", "content": message.content}],
-            model="llama3-8b-8192",
+            model="llama-3.3-70b-versatile",
         )
         response = chat_completion.choices[0].message.content
         await message.channel.send(response)
