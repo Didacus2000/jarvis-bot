@@ -5,7 +5,7 @@ from flask import Flask
 from discord.ext import commands
 from groq import Groq
 
-# 1. Configuración de Flask para "engañar" a Render
+# 1. Configuración de Flask para Render
 app = Flask(__name__)
 @app.route('/')
 def home():
@@ -20,8 +20,24 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-# Aquí iría tu lógica de Groq y eventos del bot...
-# bot.run(os.environ['DISCORD_TOKEN'])
+# Inicializar cliente de Groq
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+
+@bot.event
+async def on_message(message):
+    if message.author == bot.user:
+        return
+    
+    # Intentar obtener respuesta de Groq
+    try:
+        chat_completion = client.chat.completions.create(
+            messages=[{"role": "user", "content": message.content}],
+            model="llama3-8b-8192",
+        )
+        response = chat_completion.choices[0].message.content
+        await message.channel.send(response)
+    except Exception as e:
+        await message.channel.send(f"Error de conexión: {str(e)}")
 
 if __name__ == "__main__":
     # Iniciar la web en segundo plano
